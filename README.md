@@ -10,7 +10,7 @@ Helper script to generate AI videos/images on drma.ai using free credits.
 
 - `count`    : how many videos to generate
 - `prompt`   : text prompt for the generation
-- token file : path to a Firebase idToken file (plain JWT text)
+- token file : run `./get_firebase_token.py [path]` first to mint one
 
 ## Output
 
@@ -28,3 +28,10 @@ Helper script to generate AI videos/images on drma.ai using free credits.
 
 - Requires `bash`, `curl`, `python3`
 - Each cycle mints a fresh session; a transient `code=500` from the API is retried automatically
+
+## Onboarding (no token file needed)
+
+```bash
+./get_firebase_token.py /tmp/fb_token.txt   # signup flow -> writes idToken
+./make_video.sh 3 "cinematic drone shot" /tmp/fb_token.txt
+```
