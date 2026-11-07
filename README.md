@@ -1,28 +1,28 @@
 # drma-freegen
 
-Helper script to generate AI videos/images on drma.ai using free credits.
+Helper script to run all single-stage creation modes (text→video, image→video, text→image, image→image).
 
 ## Usage
 
 ```bash
-./make_video.sh <count> "<prompt>" [path/to/fb_token.txt]
+./make_video.sh <count> "<prompt>" [path/to/fb_token.txt] [mode] [source_image_url]
+./get_firebase_token.py [path]   # mints the token file (1h TTL)
 ```
 
-- `count`    : how many videos to generate
-- `prompt`   : text prompt for the generation
-- token file : run `./get_firebase_token.py [path]` first to mint one
+- mode: `t2v` (default, 15 credits) | `i2v` (15) | `t2i` (10) | `i2i` (10)
+- `i2v` / `i2i` need a `source_image_url` (any public image URL)
+- after a generation, leftover credits (>10) also produce a bonus text→image
 
-## Output
+## Verified modes
 
-- `outputs/video_<uid>_<taskId>.mp4` (5s, 480p)
-- `outputs/img_<uid>_<taskId>.png`   (bonus image, uses leftover credits)
+- t2v: 5s 480p mp4 ✓     (pricing 3 credits/s @480p, 6/s @720p, max 15s)
+- i2v: animated from a supplied image ✓ (mp4)
+- t2i: png ✓
+- i2i: restyled from a supplied image ✓ (png)
 
-## How it works
-
-1. `POST /videoAi/user/oneClickLogin` with `platform: web` header -> new session + 25 free credits
-2. `POST /videoAi/aiGenerate/add/new` -> `t2v` video (15 credits) then `t2i` image (10 credits)
-3. Polls `GET /videoAi/aiGenerate/<taskId>` until finished
-4. Downloads final mp4/png to `outputs/`
+Story ("microfilm", 25 credits) is NOT a single call — it runs through
+`/videoAi/drama/v2/create` -> story/cover/episode confirm steps, so it is out of
+scope for this helper.
 
 ## Notes
 
